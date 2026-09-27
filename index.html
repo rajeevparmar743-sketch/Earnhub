@@ -1,100 +1,28 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EarnHub - Learn. Work. Earn.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { width: 100%; max-width: 420px; background: #1e293b; padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; border: 1px solid #334155; }
-        .logo { font-size: 28px; font-weight: 700; color: #38bdf8; margin-bottom: 5px; }
-        .tagline { font-size: 14px; color: #94a3b8; margin-bottom: 25px; }
-        .section { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: left; border: 1px solid #334155; }
-        .section h3 { font-size: 16px; color: #38bdf8; margin-bottom: 8px; }
-        .section p { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
-        .cta-btn { display: block; width: 100%; background: #22c55e; color: #fff; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 16px; margin-top: 25px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4); transition: background 0.2s; }
-        .cta-btn:active { background: #16a34a; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnHub - Earning Updates & Online Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:#0b1020;color:#f5f7ff;min-height:100vh}.container{width:min(920px,92%);margin:auto}header{padding:22px 0}.brand{font-size:26px;font-weight:700}.hero{padding:52px 0 34px;text-align:center}.hero h1{font-size:clamp(32px,7vw,58px);line-height:1.1;margin-bottom:16px}.hero p{color:#aeb8d3;max-width:680px;margin:auto;line-height:1.7}.telegram-btn{display:inline-block;margin-top:26px;padding:14px 24px;border-radius:12px;background:#229ed9;color:white;text-decoration:none;font-weight:600}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:30px 0}.card{background:#121a2e;border:1px solid #202b46;border-radius:18px;padding:24px}.card h2{font-size:19px;margin-bottom:10px}.card p{color:#aeb8d3;line-height:1.6;font-size:14px}footer{text-align:center;color:#76819b;font-size:13px;padding:30px 0 40px}@media(max-width:700px){.grid{grid-template-columns:1fr}.hero{padding-top:35px}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">EarnHub</div>
-        <div class="tagline">Learn. Work. Earn.</div>
-
-        <div class="section">
-            <h3>📈 Earning Updates</h3>
-            <p>Daily verified earning methods aur trusted platforms ki latest updates paayein.</p>
-        </div>
-
-        <div class="section">
-            <h3>💻 Online Work</h3>
-            <p>Ghar baithe online kaam karke daily income generate karne ke aasan tareeqe.</p>
-        </div>
-
-        <div class="section">
-            <h3>🎁 Latest Offers</h3>
-            <p>Sabse behtareen loot offers, sign-up bonuses aur referral rewards.</p>
-        </div>
-
-        <a href="https://t.me/+lQi_Le8-OcE3NDVl" id="telegramBtn" class="cta-btn" target="_blank">
-            📩 Contact / Join Telegram
-        </a>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyDpJ6HdWauGj2F0TjC8XiH1QNOc1hYZs70",
-          authDomain: "landing-page-c5874.firebaseapp.com",
-          projectId: "landing-page-c5874",
-          storageBucket: "landing-page-c5874.firebasestorage.app",
-          messagingSenderId: "790444283513",
-          appId: "1:790444283513:web:15b61b2d681ed30b5a26a8",
-          measurementId: "G-F1ZFEE8SMY"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const source = urlParams.get('utm_source') || "direct";
-        const campaign = urlParams.get('utm_campaign') || "none";
-        const pageName = "EarnHub Landing Page";
-
-        async function trackVisit() {
-            try {
-                await addDoc(collection(db, "visits"), {
-                    page: pageName,
-                    source: source,
-                    campaign: campaign,
-                    visitedAt: serverTimestamp()
-                });
-                console.log("Visit tracked successfully!");
-            } catch (error) {
-                console.error("Error tracking visit: ", error);
-            }
-        }
-
-        trackVisit();
-
-        const telegramBtn = document.getElementById('telegramBtn');
-        telegramBtn.addEventListener('click', async () => {
-            try {
-                await addDoc(collection(db, "telegram_clicks"), {
-                    page: pageName,
-                    source: source,
-                    campaign: campaign,
-                    clickedAt: serverTimestamp()
-                });
-                console.log("Telegram click tracked successfully!");
-            } catch (error) {
-                console.error("Error tracking click: ", error);
-            }
-        });
-    </script>
-</body>
-</html>
+<header class="container"><div class="brand">EarnHub</div></header>
+<main class="container">
+<section class="hero"><h1>Earning Updates & Online Work</h1><p>Get the latest earning updates, online work information and new offers in one place.</p><a id="telegramBtn" class="telegram-btn" href="https://t.me/+lQi_Le8-OcE3NDVl" target="_blank" rel="noopener noreferrer">Join Telegram</a></section>
+<section class="grid"><div class="card"><h2>Earning Updates</h2><p>Latest earning-related updates and useful information.</p></div><div class="card"><h2>Online Work</h2><p>Explore online work information and opportunities.</p></div><div class="card"><h2>Latest Offers</h2><p>Check new offers and updates shared through EarnHub.</p></div></section>
+</main><footer>© 2026 EarnHub. All rights reserved.</footer>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyDpJ6HdWauG2jF0TjC8XiH1QNOc1hYZs70",authDomain:"landing-page-c5874.firebaseapp.com",projectId:"landing-page-c5874",storageBucket:"landing-page-c5874.firebasestorage.app",messagingSenderId:"790444283513",appId:"1:790444283513:web:15b61b2d681ed30b5a26a8",measurementId:"G-F1ZFEE8SMY"};
+const app=initializeApp(firebaseConfig);const db=getFirestore(app);const params=new URLSearchParams(location.search);const source=params.get("utm_source")||"direct";const campaign=params.get("utm_campaign")||"none";
+try{await addDoc(collection(db,"visits"),{page:location.pathname,source,campaign,visitedAt:serverTimestamp()});}catch(e){console.error("Visitor tracking error:",e)}
+document.getElementById("telegramBtn").addEventListener("click",async()=>{try{await addDoc(collection(db,"telegram_clicks"),{page:location.pathname,source,campaign,clickedAt:serverTimestamp()});}catch(e){console.error("Telegram click tracking error:",e)}});
+</script>
+</body></html>
