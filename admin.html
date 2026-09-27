@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EarnHub - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; padding: 20px; display: flex; justify-content: center; }
+        .dashboard-container { width: 100%; max-width: 500px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        h2 { color: #38bdf8; margin-bottom: 15px; font-size: 20px; text-align: center; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: #0f172a; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #334155; }
+        .stat-box h4 { font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
+        .stat-box p { font-size: 20px; font-weight: 700; color: #22c55e; }
+        input { width: 100%; padding: 12px; margin-bottom: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 14px; }
+        button { width: 100%; background: #38bdf8; color: #0f172a; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; }
+        button:active { background: #0ea5e9; }
+        .logout-btn { background: #ef4444; color: #fff; margin-top: 10px; }
+        .hidden { display: none !important; }
+        #errorMsg { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div id="loginSection" class="card">
+            <h2>Admin Login</h2>
+            <div id="errorMsg"></div>
+            <input type="email" id="email" placeholder="Admin Email">
+            <input type="password" id="password" placeholder="Password">
+            <button id="loginBtn">Login</button>
+        </div>
+
+        <div id="statsSection" class="card hidden">
+            <h2>EarnHub Statistics</h2>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <h4>Total Visitors</h4>
+                    <p id="totalVisitors">Loading...</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Today's Visitors</h4>
+                    <p id="todayVisitors">Loading...</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Telegram Clicks</h4>
+                    <p id="totalClicks">Loading...</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Click Rate (CTR)</h4>
+                    <p id="clickRate">Loading...</p>
+                </div>
+            </div>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDpJ6HdWauG2jF0TjC8XiH1QNOc1hYZs70",
+          authDomain: "landing-page-c5874.firebaseapp.com",
+          projectId: "landing-page-c5874",
+          storageBucket: "landing-page-c5874.firebasestorage.app",
+          messagingSenderId: "790444283513",
+          appId: "1:790444283513:web:15b61b2d681ed30b5a26a8",
+          measurementId: "G-F1ZFEE8SMY"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const loginSection = document.getElementById('loginSection');
+        const statsSection = document.getElementById('statsSection');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const errorMsg = document.getElementById('errorMsg');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginSection.classList.add('hidden');
+                statsSection.classList.remove('hidden');
+                loadDashboardStats();
+            } else {
+                loginSection.classList.remove('hidden');
+                statsSection.classList.add('hidden');
+            }
+        });
+
+        loginBtn.addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            errorMsg.innerText = "";
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                errorMsg.innerText = "Login Failed: " + error.message;
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+        });
+
+        async function loadDashboardStats() {
+            try {
+                const visitsSnapshot = await getDocs(collection(db, "visits"));
+                const totalVisits = visitsSnapshot.size;
+
+                let todayCount = 0;
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                visitsSnapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+
+                    if (data.visitedAt) {
+                        const visitDate = data.visitedAt.toDate().toISOString().split('T')[0];
+
+                        if (visitDate === todayStr) {
+                            todayCount++;
+                        }
+                    }
+                });
+
+                const clicksSnapshot = await getDocs(collection(db, "telegram_clicks"));
+                const totalClicks = clicksSnapshot.size;
+
+                let ctr = 0;
+
+                if (totalVisits > 0) {
+                    ctr = ((totalClicks / totalVisits) * 100).toFixed(1);
+                }
+
+                document.getElementById('totalVisitors').innerText = totalVisits;
+                document.getElementById('todayVisitors').innerText = todayCount;
+                document.getElementById('totalClicks').innerText = totalClicks;
+                document.getElementById('clickRate').innerText = ctr + "%";
+
+            } catch (error) {
+                console.error("Error loading stats: ", error);
+            }
+        }
+    </script>
+</body>
+</html>
