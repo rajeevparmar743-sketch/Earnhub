@@ -1,153 +1,27 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EarnHub - Admin Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; padding: 20px; display: flex; justify-content: center; }
-        .dashboard-container { width: 100%; max-width: 500px; }
-        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #334155; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        h2 { color: #38bdf8; margin-bottom: 15px; font-size: 20px; text-align: center; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: #0f172a; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #334155; }
-        .stat-box h4 { font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
-        .stat-box p { font-size: 20px; font-weight: 700; color: #22c55e; }
-        input { width: 100%; padding: 12px; margin-bottom: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 14px; }
-        button { width: 100%; background: #38bdf8; color: #0f172a; padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; }
-        button:active { background: #0ea5e9; }
-        .logout-btn { background: #ef4444; color: #fff; margin-top: 10px; }
-        .hidden { display: none !important; }
-        #errorMsg { color: #ef4444; font-size: 13px; text-align: center; margin-bottom: 10px; }
-    </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>EarnHub Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:#0b1020;color:#f5f7ff;min-height:100vh}.container{width:min(1050px,92%);margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:22px 0}.brand{font-size:24px;font-weight:700}button{border:0;cursor:pointer;font-family:inherit}.logout{background:#222c46;color:#fff;padding:10px 15px;border-radius:10px}.login-wrap{min-height:80vh;display:grid;place-items:center}.login-card{width:min(420px,100%);background:#121a2e;border:1px solid #202b46;border-radius:18px;padding:28px}.login-card h1{margin-bottom:8px}.muted{color:#9ca8c2;font-size:14px;line-height:1.6}input{width:100%;margin-top:14px;padding:13px 14px;border-radius:10px;border:1px solid #2b3857;background:#0d1426;color:#fff;outline:none}.login-btn{width:100%;margin-top:14px;padding:13px;border-radius:10px;background:#4f7cff;color:white;font-weight:600}.error{margin-top:14px;color:#ff8e8e;font-size:13px;line-height:1.5}.dashboard{display:none;padding-bottom:50px}.welcome{background:#121a2e;border:1px solid #202b46;border-radius:16px;padding:18px;margin-bottom:18px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.stat{background:#121a2e;border:1px solid #202b46;border-radius:16px;padding:22px}.stat-label{color:#9ca8c2;font-size:13px;margin-bottom:10px}.stat-value{font-size:30px;font-weight:700}.status{margin-top:18px;color:#9ca8c2;font-size:13px;line-height:1.6}@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){.stats{grid-template-columns:1fr}.topbar{align-items:flex-start}}
+</style>
 </head>
-<body>
-
-    <div class="dashboard-container">
-        <div id="loginSection" class="card">
-            <h2>Admin Login</h2>
-            <div id="errorMsg"></div>
-            <input type="email" id="email" placeholder="Admin Email">
-            <input type="password" id="password" placeholder="Password">
-            <button id="loginBtn">Login</button>
-        </div>
-
-        <div id="statsSection" class="card hidden">
-            <h2>EarnHub Statistics</h2>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <h4>Total Visitors</h4>
-                    <p id="totalVisitors">Loading...</p>
-                </div>
-                <div class="stat-box">
-                    <h4>Today's Visitors</h4>
-                    <p id="todayVisitors">Loading...</p>
-                </div>
-                <div class="stat-box">
-                    <h4>Telegram Clicks</h4>
-                    <p id="totalClicks">Loading...</p>
-                </div>
-                <div class="stat-box">
-                    <h4>Click Rate (CTR)</h4>
-                    <p id="clickRate">Loading...</p>
-                </div>
-            </div>
-            <button id="logoutBtn" class="logout-btn">Logout</button>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyDpJ6HdWauG2jF0TjC8XiH1QNOc1hYZs70",
-          authDomain: "landing-page-c5874.firebaseapp.com",
-          projectId: "landing-page-c5874",
-          storageBucket: "landing-page-c5874.firebasestorage.app",
-          messagingSenderId: "790444283513",
-          appId: "1:790444283513:web:15b61b2d681ed30b5a26a8",
-          measurementId: "G-F1ZFEE8SMY"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const loginSection = document.getElementById('loginSection');
-        const statsSection = document.getElementById('statsSection');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const errorMsg = document.getElementById('errorMsg');
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginSection.classList.add('hidden');
-                statsSection.classList.remove('hidden');
-                loadDashboardStats();
-            } else {
-                loginSection.classList.remove('hidden');
-                statsSection.classList.add('hidden');
-            }
-        });
-
-        loginBtn.addEventListener('click', async () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            errorMsg.innerText = "";
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                errorMsg.innerText = "Login Failed: " + error.message;
-            }
-        });
-
-        logoutBtn.addEventListener('click', async () => {
-            await signOut(auth);
-        });
-
-        async function loadDashboardStats() {
-            try {
-                const visitsSnapshot = await getDocs(collection(db, "visits"));
-                const totalVisits = visitsSnapshot.size;
-
-                let todayCount = 0;
-                const todayStr = new Date().toISOString().split('T')[0];
-
-                visitsSnapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-
-                    if (data.visitedAt) {
-                        const visitDate = data.visitedAt.toDate().toISOString().split('T')[0];
-
-                        if (visitDate === todayStr) {
-                            todayCount++;
-                        }
-                    }
-                });
-
-                const clicksSnapshot = await getDocs(collection(db, "telegram_clicks"));
-                const totalClicks = clicksSnapshot.size;
-
-                let ctr = 0;
-
-                if (totalVisits > 0) {
-                    ctr = ((totalClicks / totalVisits) * 100).toFixed(1);
-                }
-
-                document.getElementById('totalVisitors').innerText = totalVisits;
-                document.getElementById('todayVisitors').innerText = todayCount;
-                document.getElementById('totalClicks').innerText = totalClicks;
-                document.getElementById('clickRate').innerText = ctr + "%";
-
-            } catch (error) {
-                console.error("Error loading stats: ", error);
-            }
-        }
-    </script>
-</body>
-</html>
+<body><div class="container">
+<div id="loginSection" class="login-wrap"><div class="login-card"><h1>EarnHub Admin</h1><p class="muted">Login with your authorized admin account.</p><input id="email" type="email" value="rajeevparmar74@gmail.com" placeholder="Admin email" autocomplete="username"><input id="password" type="password" placeholder="Password" autocomplete="current-password"><button id="loginBtn" class="login-btn">Login</button><div id="loginError" class="error"></div></div></div>
+<div id="dashboardSection" class="dashboard"><div class="topbar"><div class="brand">EarnHub Admin</div><button id="logoutBtn" class="logout">Logout</button></div><div class="welcome"><strong>Dashboard</strong><p id="adminEmail" class="muted"></p></div><div class="stats"><div class="stat"><div class="stat-label">Total Visitors</div><div id="totalVisitors" class="stat-value">Loading...</div></div><div class="stat"><div class="stat-label">Today's Visitors</div><div id="todayVisitors" class="stat-value">Loading...</div></div><div class="stat"><div class="stat-label">Telegram Clicks</div><div id="telegramClicks" class="stat-value">Loading...</div></div><div class="stat"><div class="stat-label">CTR</div><div id="ctr" class="stat-value">Loading...</div></div></div><div id="dashboardStatus" class="status"></div></div>
+</div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyDpJ6HdWauG2jF0TjC8XiH1QNOc1hYZs70",authDomain:"landing-page-c5874.firebaseapp.com",projectId:"landing-page-c5874",storageBucket:"landing-page-c5874.firebasestorage.app",messagingSenderId:"790444283513",appId:"1:790444283513:web:15b61b2d681ed30b5a26a8",measurementId:"G-F1ZFEE8SMY"};
+const ADMIN_EMAIL="rajeevparmar74@gmail.com";const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
+const loginSection=document.getElementById("loginSection"),dashboardSection=document.getElementById("dashboardSection"),loginBtn=document.getElementById("loginBtn"),logoutBtn=document.getElementById("logoutBtn"),emailInput=document.getElementById("email"),passwordInput=document.getElementById("password"),loginError=document.getElementById("loginError"),adminEmail=document.getElementById("adminEmail"),dashboardStatus=document.getElementById("dashboardStatus");
+function showLogin(){loginSection.style.display="grid";dashboardSection.style.display="none"}function showDashboard(user){loginSection.style.display="none";dashboardSection.style.display="block";adminEmail.textContent="Signed in as: "+user.email}
+loginBtn.addEventListener("click",async()=>{loginError.textContent="";const email=emailInput.value.trim(),password=passwordInput.value;if(!email||!password){loginError.textContent="Email aur password dono enter karo.";return}try{await signInWithEmailAndPassword(auth,email,password)}catch(e){console.error(e);loginError.textContent="Login failed: "+(e.code||e.message)}});passwordInput.addEventListener("keydown",e=>{if(e.key==="Enter")loginBtn.click()});logoutBtn.addEventListener("click",()=>signOut(auth));
+function toDate(v){return v&&typeof v.toDate==="function"?v.toDate():null}
+async function loadDashboardStats(){dashboardStatus.textContent="Firebase data load ho raha hai...";try{const [visitsSnapshot,clicksSnapshot]=await Promise.all([getDocs(collection(db,"visits")),getDocs(collection(db,"telegram_clicks"))]);const total=visitsSnapshot.size,clicks=clicksSnapshot.size;const now=new Date(),start=new Date(now.getFullYear(),now.getMonth(),now.getDate()),end=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);let today=0;visitsSnapshot.forEach(doc=>{const d=toDate(doc.data().visitedAt);if(d&&d>=start&&d<end)today++});const ctr=total?((clicks/total)*100).toFixed(2):"0.00";document.getElementById("totalVisitors").textContent=total;document.getElementById("todayVisitors").textContent=today;document.getElementById("telegramClicks").textContent=clicks;document.getElementById("ctr").textContent=ctr+"%";dashboardStatus.textContent="Data successfully load ho gaya. Last checked: "+new Date().toLocaleString()}catch(e){console.error("Dashboard data error:",e);for(const id of ["totalVisitors","todayVisitors","telegramClicks","ctr"])document.getElementById(id).textContent="Error";dashboardStatus.textContent="Firebase data load nahi ho saka. Error: "+(e.code||e.message)+" — Firestore Rules check karo."}}
+onAuthStateChanged(auth,async user=>{if(!user){showLogin();return}if((user.email||"").toLowerCase()!==ADMIN_EMAIL.toLowerCase()){await signOut(auth);loginError.textContent="Is account ko admin dashboard access nahi hai.";showLogin();return}showDashboard(user);await loadDashboardStats()});
+</script></body></html>
+                                                                                                           
