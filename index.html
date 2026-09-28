@@ -3,26 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EarnHub - Earning Updates & Online Work</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>EarnHub</title>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '2268116420704851');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=2268116420704851&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Poppins,sans-serif;background:#0b1020;color:#f5f7ff;min-height:100vh}.container{width:min(920px,92%);margin:auto}header{padding:22px 0}.brand{font-size:26px;font-weight:700}.hero{padding:52px 0 34px;text-align:center}.hero h1{font-size:clamp(32px,7vw,58px);line-height:1.1;margin-bottom:16px}.hero p{color:#aeb8d3;max-width:680px;margin:auto;line-height:1.7}.telegram-btn{display:inline-block;margin-top:26px;padding:14px 24px;border-radius:12px;background:#229ed9;color:white;text-decoration:none;font-weight:600}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:30px 0}.card{background:#121a2e;border:1px solid #202b46;border-radius:18px;padding:24px}.card h2{font-size:19px;margin-bottom:10px}.card p{color:#aeb8d3;line-height:1.6;font-size:14px}footer{text-align:center;color:#76819b;font-size:13px;padding:30px 0 40px}@media(max-width:700px){.grid{grid-template-columns:1fr}.hero{padding-top:35px}}
+body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#fff}
+.container{width:min(920px,92%);margin:auto}
+header{padding:22px 0}.brand{font-size:26px;font-weight:700}
+.hero{text-align:center;padding:55px 0 35px}
+.hero h1{font-size:42px;margin:0 0 15px}
+.hero p{color:#aeb8d3;line-height:1.7}
+.telegram-btn{display:inline-block;margin-top:25px;padding:14px 24px;border-radius:12px;background:#229ed9;color:#fff;text-decoration:none;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:30px 0}
+.card{background:#121a2e;border:1px solid #202b46;border-radius:18px;padding:24px}
+.card p{color:#aeb8d3;line-height:1.6;font-size:14px}
+footer{text-align:center;color:#76819b;padding:30px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:34px}}
 </style>
 </head>
 <body>
 <header class="container"><div class="brand">EarnHub</div></header>
 <main class="container">
-<section class="hero"><h1>Earning Updates & Online Work</h1><p>Get the latest earning updates, online work information and new offers in one place.</p><a id="telegramBtn" class="telegram-btn" href="https://t.me/+lQi_Le8-OcE3NDVl" target="_blank" rel="noopener noreferrer">Join Telegram</a></section>
-<section class="grid"><div class="card"><h2>Earning Updates</h2><p>Latest earning-related updates and useful information.</p></div><div class="card"><h2>Online Work</h2><p>Explore online work information and opportunities.</p></div><div class="card"><h2>Latest Offers</h2><p>Check new offers and updates shared through EarnHub.</p></div></section>
-</main><footer>© 2026 EarnHub. All rights reserved.</footer>
+<section class="hero">
+<h1>Earning Updates & Online Work</h1>
+<p>Get the latest earning updates, online work information and new offers in one place.</p>
+<a id="telegramBtn" class="telegram-btn" href="https://t.me/+lQi_Le8-OcE3NDVl" target="_blank" rel="noopener noreferrer">Join Telegram</a>
+</section>
+<section class="grid">
+<div class="card"><h2>Earning Updates</h2><p>Latest earning-related updates and useful information.</p></div>
+<div class="card"><h2>Online Work</h2><p>Explore online work information and opportunities.</p></div>
+<div class="card"><h2>Latest Offers</h2><p>Check new offers and updates shared through EarnHub.</p></div>
+</section>
+</main>
+<footer>© 2026 EarnHub. All rights reserved.</footer>
+
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyDpJ6HdWauG2jF0TjC8XiH1QNOc1hYZs70",authDomain:"landing-page-c5874.firebaseapp.com",projectId:"landing-page-c5874",storageBucket:"landing-page-c5874.firebasestorage.app",messagingSenderId:"790444283513",appId:"1:790444283513:web:15b61b2d681ed30b5a26a8",measurementId:"G-F1ZFEE8SMY"};
-const app=initializeApp(firebaseConfig);const db=getFirestore(app);const params=new URLSearchParams(location.search);const source=params.get("utm_source")||"direct";const campaign=params.get("utm_campaign")||"none";
-try{await addDoc(collection(db,"visits"),{page:location.pathname,source,campaign,visitedAt:serverTimestamp()});}catch(e){console.error("Visitor tracking error:",e)}
-document.getElementById("telegramBtn").addEventListener("click",async()=>{try{await addDoc(collection(db,"telegram_clicks"),{page:location.pathname,source,campaign,clickedAt:serverTimestamp()});}catch(e){console.error("Telegram click tracking error:",e)}});
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpJ6HdWauG2jF0TjC8XiH1QNOc1hYZs70",
+  authDomain: "landing-page-c5874.firebaseapp.com",
+  projectId: "landing-page-c5874",
+  storageBucket: "landing-page-c5874.firebasestorage.app",
+  messagingSenderId: "790444283513",
+  appId: "1:790444283513:web:15b61b2d681ed30b5a26a8",
+  measurementId: "G-F1ZFEE8SMY"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const params = new URLSearchParams(window.location.search);
+const source = params.get("utm_source") || "direct";
+const campaign = params.get("utm_campaign") || "none";
+
+try {
+  await addDoc(collection(db,"visits"), {
+    page: window.location.pathname,
+    source, campaign, visitedAt: serverTimestamp()
+  });
+} catch(error) {
+  console.error("Visitor tracking error:", error);
+}
+
+document.getElementById("telegramBtn").addEventListener("click", async () => {
+  if (typeof window.fbq === "function") {
+    fbq("trackCustom", "TelegramClick");
+  }
+  try {
+    await addDoc(collection(db,"telegram_clicks"), {
+      page: window.location.pathname,
+      source, campaign, clickedAt: serverTimestamp()
+    });
+  } catch(error) {
+    console.error("Telegram click tracking error:", error);
+  }
+});
 </script>
-</body></html>
+</body>
+  </html>
+  
